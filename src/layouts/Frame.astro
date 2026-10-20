@@ -19,6 +19,19 @@ const { title, background, height = 2766 } = Astro.props;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
+    <script is:inline>
+      // Tag cross-page view transitions that change section (e.g. /projects -> /photos)
+      // so the nav underline only redraws then, not for /photos -> /photos/gallery.
+      addEventListener('pagereveal', (event) => {
+        if (!event.viewTransition) return;
+        const from = window.navigation?.activation?.from?.url || document.referrer;
+        if (!from) return;
+        const section = (url) => new URL(url).pathname.split('/')[1];
+        if (section(from) !== section(location.href)) {
+          event.viewTransition.types.add('section-change');
+        }
+      });
+    </script>
   </head>
   <body style={`--frame-bg: ${background}; --frame-h: ${height === 'auto' ? 0 : height};`}>
     <main class:list={['frame', { auto: height === 'auto' }]}>

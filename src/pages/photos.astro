@@ -14,8 +14,11 @@ const panels = [163.44, 1336.24, 2476.45];
   <Copyright year={2026} centerX={284.78} color="black" />
 
   {
-    panels.map((x) => (
-      <div class="panel" style={`--x: ${x};`}>
+    panels.map((x, i) => (
+      <div
+        class="panel"
+        style={`--x: ${x}; view-transition-name: photo-panel-${i}; view-transition-class: wipe wipe-${i + 1};`}
+      >
         <Image src={photo} alt="" widths={[400, 800, 1200, 1600]} sizes="29vw" />
       </div>
     ))
@@ -54,6 +57,8 @@ const panels = [163.44, 1336.24, 2476.45];
     line-height: normal;
     white-space: nowrap;
     color: #2b313d;
+    view-transition-name: photos-title;
+    view-transition-class: wipe wipe-2;
   }
 
   .view {
@@ -70,5 +75,7 @@ const panels = [163.44, 1336.24, 2476.45];
     font-size: calc(80 * var(--u));
     line-height: normal;
     color: white;
+    view-transition-name: photos-view;
+    view-transition-class: wipe wipe-3 above-paper;
   }
 </style>

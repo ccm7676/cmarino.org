@@ -37,8 +37,10 @@ const projects = [
   <h1>PROJECTS</h1>
 
   {
-    projects.map((project) => (
-      <article style={`--x: ${project.x};`}>
+    projects.map((project, i) => (
+      <article
+        style={`--x: ${project.x}; view-transition-name: project-${i}; view-transition-class: wipe wipe-${i + 2};`}
+      >
         <h2>{project.name}</h2>
         <p>{project.description}</p>
         <a class="view" href={project.href} target="_blank" rel="noopener">
@@ -63,6 +65,8 @@ const projects = [
     line-height: normal;
     white-space: nowrap;
     color: rgba(0, 0, 0, 0.4);
+    view-transition-name: projects-title;
+    view-transition-class: wipe;
   }
 
   article {
