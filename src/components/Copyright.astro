@@ -1,0 +1,35 @@
+---
+interface Props {
+  year: number;
+  /** Horizontal center of the text box in Figma px. */
+  centerX: number;
+  color: string;
+  /** Pin to the bottom of the frame instead of the design's fixed top, for auto-height pages. */
+  bottom?: boolean;
+}
+
+const { year, centerX, color, bottom = false } = Astro.props;
+---
+
+<p class:list={{ bottom }} style={`--cx: ${centerX}; color: ${color};`}>{` © Carl Marino ${year}`}</p>
+
+<style>
+  p {
+    position: absolute;
+    left: calc(var(--cx) * var(--u));
+    top: calc(2654.22 * var(--u));
+    width: calc(569.567 * var(--u));
+    height: calc(111.938 * var(--u));
+    transform: translateX(-50%);
+    font-family: 'Maname', serif;
+    font-size: calc(50 * var(--u));
+    line-height: normal;
+    text-align: center;
+    white-space: pre;
+  }
+
+  .bottom {
+    top: auto;
+    bottom: 0;
+  }
+</style>

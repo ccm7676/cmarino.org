@@ -1,0 +1,28 @@
+---
+import '@fontsource/maname/400.css';
+import '@fontsource/space-grotesk/700.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  background: string;
+  /** Figma frame height in px (frames are 3690px wide), or 'auto' to fit content. */
+  height?: number | 'auto';
+}
+
+const { title, background, height = 2766 } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{title}</title>
+  </head>
+  <body style={`--frame-bg: ${background}; --frame-h: ${height === 'auto' ? 0 : height};`}>
+    <main class:list={['frame', { auto: height === 'auto' }]}>
+      <slot />
+    </main>
+  </body>
+</html>

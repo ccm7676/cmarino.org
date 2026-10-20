@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import Frame from '../layouts/Frame.astro';
+import PaperTexture from '../components/PaperTexture.astro';
+import Copyright from '../components/Copyright.astro';
+import SiteNav from '../components/SiteNav.astro';
+import photo from '../assets/photos/island-sunset.webp';
+import underline from '../assets/underline-photos.svg';
+
+const panels = [163.44, 1336.24, 2476.45];
+---
+
+<Frame title="Carl Marino — Photos" background="#353d4d">
+  <Copyright year={2026} centerX={284.78} color="black" />
+
+  {
+    panels.map((x) => (
+      <div class="panel" style={`--x: ${x};`}>
+        <Image src={photo} alt="" widths={[400, 800, 1200, 1600]} sizes="29vw" />
+      </div>
+    ))
+  }
+
+  <h1>PHOTOS</h1>
+
+  <SiteNav active="photos" underline={{ src: underline.src, x: 1314.51, y: 206.06, width: 444.033 }} />
+
+  <PaperTexture x={0} y={0} width={3742.732} height={2801.338} />
+
+  <a class="view" href="/photos/gallery">VIEW</a>
+</Frame>
+
+<style>
+  .panel {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: calc(712.43 * var(--u));
+    width: calc(1050.108 * var(--u));
+    height: calc(1574.97 * var(--u));
+  }
+
+  .panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  h1 {
+    position: absolute;
+    left: calc(800.37 * var(--u));
+    top: calc(1124.92 * var(--u));
+    font-family: 'Charlottenburg Choices', serif;
+    font-size: calc(600 * var(--u));
+    line-height: normal;
+    white-space: nowrap;
+    color: #2b313d;
+  }
+
+  .view {
+    position: absolute;
+    left: calc(1388.98 * var(--u));
+    top: calc(2048.56 * var(--u));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(964.777 * var(--u));
+    height: calc(200 * var(--u));
+    border: calc(8 * var(--u)) solid white;
+    font-family: 'Unity Sans Basic', sans-serif;
+    font-size: calc(80 * var(--u));
+    line-height: normal;
+    color: white;
+  }
+</style>

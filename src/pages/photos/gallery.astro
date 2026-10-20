@@ -1,0 +1,63 @@
+---
+import { Image } from 'astro:assets';
+import Frame from '../../layouts/Frame.astro';
+import PaperTexture from '../../components/PaperTexture.astro';
+import Copyright from '../../components/Copyright.astro';
+import SiteNav from '../../components/SiteNav.astro';
+import underline from '../../assets/underline-photos.svg';
+import { photos } from '../../data/photos';
+
+// Not part of the Figma design: a minimal gallery in the photos page's style.
+---
+
+<Frame title="Carl Marino — Photo gallery" background="#353d4d" height="auto">
+  <h1 class="visually-hidden">Photo gallery</h1>
+
+  <ul class="gallery">
+    {
+      photos.map((photo) => (
+        <li>
+          <Image
+            src={photo.src}
+            alt={photo.alt}
+            widths={[400, 640, 960, 1280, 1920]}
+            sizes="28.2vw"
+          />
+        </li>
+      ))
+    }
+  </ul>
+
+  <SiteNav active="photos" underline={{ src: underline.src, x: 1314.51, y: 206.06, width: 444.033 }} />
+
+  <PaperTexture repeat />
+
+  <Copyright year={2026} centerX={284.78} color="black" bottom />
+</Frame>
+
+<style>
+  .gallery {
+    columns: 3;
+    column-gap: calc(122 * var(--u));
+    padding: calc(400 * var(--u)) calc(163.44 * var(--u)) calc(300 * var(--u));
+  }
+
+  .gallery li {
+    break-inside: avoid;
+    margin-bottom: calc(122 * var(--u));
+  }
+
+  .gallery img {
+    width: 100%;
+    height: auto;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+</style>

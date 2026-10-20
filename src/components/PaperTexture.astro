@@ -1,0 +1,83 @@
+---
+import { Image, getImage } from 'astro:assets';
+import paper from '../assets/paper-texture.jpg';
+
+type Props =
+  | {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      /** Image placement inside the box, in percent. Omit to cover the box. */
+      crop?: { left: number; top: number; width: number; height: number };
+      repeat?: never;
+    }
+  | {
+      /** Tile the texture down the whole frame, for pages taller than the design. */
+      repeat: true;
+    };
+
+const props = Astro.props;
+
+// The texture renders ~114% of the frame width on every page.
+const widths = [1280, 1920, 2560, 3200, 4096];
+const sizes = '114vw';
+
+const tile = props.repeat ? await getImage({ src: paper, width: 2560 }) : undefined;
+---
+
+{
+  props.repeat ? (
+    <div class="paper repeat" style={`background-image: url(${tile!.src});`} />
+  ) : (
+    <div
+      class="paper"
+      style={`--x: ${props.x}; --y: ${props.y}; --w: ${props.width}; --h: ${props.height};`}
+    >
+      <Image
+        src={paper}
+        alt=""
+        widths={widths}
+        sizes={sizes}
+        class={props.crop ? 'cropped' : 'cover'}
+        style={props.crop &&
+          `left: ${props.crop.left}%; top: ${props.crop.top}%; width: ${props.crop.width}%; height: ${props.crop.height}%;`}
+      />
+    </div>
+  )
+}
+
+<style>
+  .paper {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: calc(var(--y) * var(--u));
+    width: calc(var(--w) * var(--u));
+    height: calc(var(--h) * var(--u));
+    overflow: hidden;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  .repeat {
+    inset: 0;
+    width: auto;
+    height: auto;
+    /* Same scale as the covered texture on the fixed-height pages. */
+    background-size: calc(4199 * var(--u)) auto;
+    background-position: center top;
+    background-repeat: repeat-y;
+  }
+
+  img {
+    position: absolute;
+    max-width: none;
+  }
+
+  .cover {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

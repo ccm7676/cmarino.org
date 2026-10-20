@@ -1,0 +1,80 @@
+---
+interface Props {
+  active: 'projects' | 'photos';
+  /** Brush underline beneath the active item, in Figma px. */
+  underline: { src: string; x: number; y: number; width: number };
+}
+
+const { active, underline } = Astro.props;
+
+const items = [
+  { id: 'projects', label: 'Projects', href: '/projects' },
+  // Music page isn't built yet.
+  { id: 'music', label: 'Music', href: undefined },
+  { id: 'photos', label: 'Photos', href: '/photos' },
+  { id: 'contact', label: 'Contact me', href: '/' },
+];
+---
+
+<nav>
+  <ul>
+    {
+      items.map((item) => (
+        <li class:list={{ active: item.id === active, contact: item.id === 'contact' }}>
+          <a href={item.href} aria-current={item.id === active ? 'page' : undefined}>
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+<div
+  class="underline"
+  style={`--x: ${underline.x}; --y: ${underline.y}; --w: ${underline.width};`}
+>
+  <img src={underline.src} alt="" />
+</div>
+
+<style>
+  ul {
+    position: absolute;
+    top: calc(89.06 * var(--u));
+    left: calc(97.33 * var(--u));
+    right: calc(90.74 * var(--u));
+    display: flex;
+    gap: calc(163.59 * var(--u));
+    font-family: 'Unity Sans Display Max', sans-serif;
+    font-size: calc(100 * var(--u));
+    line-height: normal;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  .active {
+    color: white;
+  }
+
+  .contact {
+    margin-left: auto;
+  }
+
+  .underline {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: calc(var(--y) * var(--u));
+    width: calc(var(--w) * var(--u));
+    height: calc(32.089 * var(--u));
+    pointer-events: none;
+  }
+
+  .underline img {
+    position: absolute;
+    top: -23.04%;
+    left: 0;
+    width: 100%;
+    height: 140.04%;
+    max-width: none;
+  }
+</style>

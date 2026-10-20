@@ -1,0 +1,118 @@
+---
+import Frame from '../layouts/Frame.astro';
+import PaperTexture from '../components/PaperTexture.astro';
+import Copyright from '../components/Copyright.astro';
+import SiteNav from '../components/SiteNav.astro';
+import underline from '../assets/underline-projects.svg';
+
+const projects = [
+  {
+    name: 'EASEL',
+    // TODO: Easel has no description yet; this is the design's placeholder text.
+    description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam quis tincidunt nibh. Integer sed fringilla sem, et consectetur orci. Etiam ut lorem turpis. Praesent id dignissim felis. Proin commodo molestie lorem, at varius massa rhoncus eget. Curabitur nec nisi venenatis, viverra est at, blandit diam. Mauris at commodo nunc. Nunc vitae sapien non magna fringilla interdum sit amet aliquet velit. Phasellus malesuada viverra quam, a pulvinar massa tincidunt ac. Nullam posuere dictum ante at fringilla. Fusce tempus quam eget ultricies semper. Morbi rutrum convallis turpis vitae lacinia. Aenean volutpat justo lorem, quis ornare massa dapibus vel.',
+    href: 'https://github.com/ccm7676/Easel',
+    x: 144.25,
+  },
+  {
+    name: 'MORSY',
+    description:
+      "Morsy is an open-source private messenger. Many private messengers nowadays have one major fault, which is the centralized nature of the servers which the messages are sent through. Morsy's primary aim is to provide privacy to its users while requiring zero trust in the servers. This is achieved by using WebRTC to send the messages directly between users, making the server's sole purpose to provide the initial connection.",
+    href: 'https://github.com/MorsyApp/Morsy',
+    x: 1338.92,
+  },
+  {
+    name: 'SUDOKUH',
+    description:
+      "SudoKuh is a Sudoku app written in Python. Unlike many other Sudoku apps, SudoKuh doesn't have preprogrammed puzzles, instead it generates puzzles using a custom algorithm with varying levels of difficulty.",
+    href: 'https://github.com/ccm7676/sudokuh',
+    x: 2533.59,
+  },
+];
+---
+
+<Frame title="Carl Marino — Projects" background="#898d7f">
+  <Copyright year={2026} centerX={284.78} color="black" />
+
+  <h1>PROJECTS</h1>
+
+  {
+    projects.map((project) => (
+      <article style={`--x: ${project.x};`}>
+        <h2>{project.name}</h2>
+        <p>{project.description}</p>
+        <a class="view" href={project.href} target="_blank" rel="noopener">
+          VIEW
+        </a>
+      </article>
+    ))
+  }
+
+  <SiteNav active="projects" underline={{ src: underline.src, x: 89.84, y: 215.82, width: 553.993 }} />
+
+  <PaperTexture x={0} y={0} width={3742.732} height={2801.338} />
+</Frame>
+
+<style>
+  h1 {
+    position: absolute;
+    left: calc(537 * var(--u));
+    top: calc(404.36 * var(--u));
+    font-family: 'Charlottenburg Classic', serif;
+    font-size: calc(600 * var(--u));
+    line-height: normal;
+    white-space: nowrap;
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  article {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: calc(1230.12 * var(--u));
+    width: calc(1064.887 * var(--u));
+    height: calc(1285.306 * var(--u));
+    padding: calc(55.4 * var(--u)) 0 0 calc(78.08 * var(--u));
+    border-radius: calc(50 * var(--u));
+    background: #696d61;
+    box-shadow: inset calc(4 * var(--u)) calc(4 * var(--u)) calc(4 * var(--u)) calc(8 * var(--u))
+      rgba(38, 38, 38, 0.25);
+    color: white;
+  }
+
+  h2 {
+    font-family: 'Charlottenburg Classic', serif;
+    font-size: calc(100 * var(--u));
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  article p {
+    position: absolute;
+    left: calc(78.08 * var(--u));
+    top: calc(200.23 * var(--u));
+    width: calc(907.593 * var(--u));
+    font-family: 'Unity Sans Basic', sans-serif;
+    font-size: calc(40 * var(--u));
+    line-height: normal;
+    text-align: justify;
+    text-transform: capitalize;
+  }
+
+  .view {
+    position: absolute;
+    right: calc(40.08 * var(--u));
+    bottom: calc(51.08 * var(--u));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(484.084 * var(--u));
+    height: calc(160 * var(--u));
+    border-radius: calc(2000 * var(--u));
+    background: white;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: calc(64 * var(--u));
+    line-height: normal;
+    color: #696d61;
+  }
+</style>
