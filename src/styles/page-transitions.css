@@ -1,18 +1,12 @@
 /*
- * Cross-page transitions between the sections with the top nav (Projects, Photos, Music).
- * Only pages that render SiteNav include this file, so only they opt in.
+ * Page transitions, run by Astro's ClientRouter (see Frame.astro) so navigating between
+ * pages swaps the content in place instead of reloading.
  *
  * Layers: everything without a view-transition-name (the page background, copyright)
  * crossfades as the root, so the background colour blends on its own. Page content is
  * named with the `wipe` class, the nav text is `site-nav`, and the paper texture is
- * `paper`, kept multiplied on top as it is on the page.
+ * `paper`, kept on top as it is on the page.
  */
-
-@media (prefers-reduced-motion: no-preference) {
-  @view-transition {
-    navigation: auto;
-  }
-}
 
 /* Background colour and nav text colours blend over the whole transition. */
 ::view-transition-old(root),
@@ -23,9 +17,18 @@
   animation-timing-function: ease-in-out;
 }
 
+/* Every page has the same texture, so only the incoming one is shown: crossfading the two
+   semi-transparent layers would double the texture's darkening. */
 ::view-transition-group(paper) {
   z-index: 1;
-  mix-blend-mode: multiply;
+  animation: none;
+}
+
+::view-transition-old(paper) {
+  display: none;
+}
+
+::view-transition-new(paper) {
   animation: none;
 }
 
@@ -72,5 +75,68 @@
   }
   to {
     mask-position: 0 0;
+  }
+}
+
+/*
+ * Contact <-> Portfolio: the pages slide sideways as neighbouring panels, Contact on the left
+ * (types set in Frame.astro). The incoming page's paper texture is left unnamed so it's part of
+ * the page's snapshot and moves with it; the outgoing one was already captured separately, so
+ * it's moved in step with its page.
+ */
+html:active-view-transition-type(slide-left) .paper,
+html:active-view-transition-type(slide-right) .paper {
+  view-transition-name: none;
+}
+
+html:active-view-transition-type(slide-left)::view-transition-old(root),
+html:active-view-transition-type(slide-left)::view-transition-old(paper) {
+  display: block;
+  animation: slide-to-left 750ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+html:active-view-transition-type(slide-left)::view-transition-new(root) {
+  animation: slide-from-right 750ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+html:active-view-transition-type(slide-right)::view-transition-old(root),
+html:active-view-transition-type(slide-right)::view-transition-old(paper) {
+  display: block;
+  animation: slide-to-right 750ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+html:active-view-transition-type(slide-right)::view-transition-new(root) {
+  animation: slide-from-left 750ms cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes slide-to-left {
+  to {
+    transform: translateX(-100vw);
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(100vw);
+  }
+}
+
+@keyframes slide-to-right {
+  to {
+    transform: translateX(100vw);
+  }
+}
+
+@keyframes slide-from-left {
+  from {
+    transform: translateX(-100vw);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }

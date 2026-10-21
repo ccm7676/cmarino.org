@@ -36,15 +36,21 @@ const links = [
   />
 
   <div class="photo">
-    <Image src={photo} alt="" widths={[480, 800, 1200, 1600, 2400]} sizes="47vw" />
+    <Image
+      src={photo}
+      alt=""
+      widths={[480, 800, 1200, 1600, 2400]}
+      sizes="(max-width: 1000px) 100vw, (orientation: portrait) 100vw, 47vw"
+      priority
+    />
   </div>
 </Frame>
 
 <style>
   .links {
     position: absolute;
-    left: calc(1997.61 * var(--u));
-    top: calc(361.59 * var(--u));
+    left: calc(1997.61 * var(--ux));
+    top: calc(361.59 * var(--uy));
     display: flex;
     flex-direction: column;
     gap: calc(55.47 * var(--u));
@@ -57,10 +63,10 @@ const links = [
 
   .photo {
     position: absolute;
-    left: calc(74.37 * var(--u));
-    top: calc(95.13 * var(--u));
-    width: calc(1706.2 * var(--u));
-    height: calc(2564.622 * var(--u));
+    left: calc(74.37 * var(--ux));
+    top: calc(95.13 * var(--uy));
+    width: calc(1706.2 * var(--ux));
+    height: calc(2564.622 * var(--uy));
     border-radius: calc(70 * var(--u));
     overflow: hidden;
   }
@@ -69,5 +75,29 @@ const links = [
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  /* Portrait: stacked on one screen, the photo takes whatever height the links leave. */
+  @media (orientation: portrait) {
+    .links {
+      position: relative;
+      inset: auto;
+      gap: 0;
+      font-size: clamp(1.75rem, min(11cqw, 8svh), 5rem);
+      line-height: 1.15;
+    }
+
+    /* First on the page, and kept above the paper texture as on the design. */
+    .photo {
+      position: relative;
+      inset: auto;
+      z-index: 1;
+      order: -1;
+      flex: 1 1 0;
+      width: 100%;
+      height: auto;
+      min-height: 6rem;
+      border-radius: clamp(1rem, 4cqw, 2rem);
+    }
   }
 </style>

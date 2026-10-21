@@ -1,7 +1,9 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '@fontsource/maname/400.css';
 import '@fontsource/space-grotesk/700.css';
 import '../styles/global.css';
+import '../styles/page-transitions.css';
 
 interface Props {
   title: string;
@@ -17,21 +19,9 @@ const { title, background, height = 2766 } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <script is:inline>
-      // Tag cross-page view transitions that change section (e.g. /projects -> /photos)
-      // so the nav underline only redraws then, not for /photos -> /photos/gallery.
-      addEventListener('pagereveal', (event) => {
-        if (!event.viewTransition) return;
-        const from = window.navigation?.activation?.from?.url || document.referrer;
-        if (!from) return;
-        const section = (url) => new URL(url).pathname.split('/')[1];
-        if (section(from) !== section(location.href)) {
-          event.viewTransition.types.add('section-change');
-        }
-      });
-    </script>
+    <ClientRouter />
   </head>
   <body style={`--frame-bg: ${background}; --frame-h: ${height === 'auto' ? 0 : height};`}>
     <main class:list={['frame', { auto: height === 'auto' }]}>
@@ -39,3 +29,50 @@ const { title, background, height = 2766 } = Astro.props;
     </main>
   </body>
 </html>
+
+<script>
+  const section = (url: URL) => url.pathname.split('/')[1];
+
+  // Tag transitions that change section (e.g. /projects -> /photos) so the nav underline
+  // only redraws then, not for /photos -> /photos/gallery.
+  document.addEventListener('astro:before-swap', (event) => {
+    if (section(event.from) !== section(event.to)) {
+      event.viewTransition.types?.add('section-change');
+    }
+
+    // Contact and Portfolio slide sideways as neighbouring panels, Contact on the left.
+    const route = `${event.from.pathname} ${event.to.pathname}`;
+    if (route === '/ /portfolio') event.viewTransition.types?.add('slide-left');
+    if (route === '/portfolio /') event.viewTransition.types?.add('slide-right');
+  });
+
+  // Give the incoming page's eager images (and the paper texture's tile, a CSS background)
+  // a moment to decode, so they're already in the new snapshot instead of popping in.
+  const decode = (source: HTMLImageElement | string) => {
+    const img = new Image();
+    if (typeof source === 'string') {
+      img.src = source;
+    } else {
+      img.sizes = source.sizes;
+      img.srcset = source.srcset;
+      img.src = source.src;
+    }
+    return img.decode().catch(() => {});
+  };
+
+  document.addEventListener('astro:before-preparation', (event) => {
+    const load = event.loader;
+    event.loader = async () => {
+      await load();
+      const images = event.newDocument.querySelectorAll<HTMLImageElement>('img[loading="eager"]');
+      const urls = Array.from(
+        event.newDocument.querySelectorAll<HTMLElement>('[data-preload]'),
+        (el) => el.dataset.preload!,
+      );
+      await Promise.race([
+        Promise.all([...Array.from(images, decode), ...urls.map(decode)]),
+        new Promise((resolve) => setTimeout(resolve, 800)),
+      ]);
+    };
+  });
+</script>

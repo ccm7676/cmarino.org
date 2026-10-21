@@ -16,8 +16,8 @@ const { year, centerX, color, bottom = false } = Astro.props;
 <style>
   p {
     position: absolute;
-    left: calc(var(--cx) * var(--u));
-    top: calc(2654.22 * var(--u));
+    left: calc(var(--cx) * var(--ux));
+    top: calc(2654.22 * var(--uy));
     width: calc(569.567 * var(--u));
     height: calc(111.938 * var(--u));
     transform: translateX(-50%);
@@ -31,5 +31,20 @@ const { year, centerX, color, bottom = false } = Astro.props;
   .bottom {
     top: auto;
     bottom: 0;
+  }
+
+  @media (max-width: 1000px), (orientation: portrait) {
+    p,
+    .bottom {
+      position: relative;
+      inset: auto;
+      order: 1;
+      width: auto;
+      height: auto;
+      margin-top: auto;
+      transform: none;
+      font-size: 0.875rem;
+      text-align: right;
+    }
   }
 </style>

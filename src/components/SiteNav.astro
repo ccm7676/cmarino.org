@@ -3,7 +3,7 @@ import '../styles/page-transitions.css';
 
 interface Props {
   active: 'projects' | 'photos';
-  /** Brush underline beneath the active item, in Figma px. */
+  /** Brush underline beneath the active item, in Figma px from the item's top-left corner. */
   underline: { src: string; x: number; y: number; width: number };
 }
 
@@ -26,26 +26,28 @@ const items = [
           <a href={item.href} aria-current={item.id === active ? 'page' : undefined}>
             {item.label}
           </a>
+          {item.id === active && (
+            <span
+              class="underline"
+              style={`--x: ${underline.x}; --y: ${underline.y}; --w: ${underline.width}; view-transition-name: underline-${active};`}
+            >
+              <img src={underline.src} alt="" />
+            </span>
+          )}
         </li>
       ))
     }
   </ul>
 </nav>
-<div
-  class="underline"
-  style={`--x: ${underline.x}; --y: ${underline.y}; --w: ${underline.width}; view-transition-name: underline-${active};`}
->
-  <img src={underline.src} alt="" />
-</div>
 
 <style>
   ul {
     position: absolute;
-    top: calc(89.06 * var(--u));
-    left: calc(97.33 * var(--u));
-    right: calc(90.74 * var(--u));
+    top: calc(89.06 * var(--uy));
+    left: calc(97.33 * var(--ux));
+    right: calc(90.74 * var(--ux));
     display: flex;
-    gap: calc(163.59 * var(--u));
+    gap: calc(163.59 * var(--ux));
     font-family: 'Unity Sans Display Max', sans-serif;
     font-size: calc(100 * var(--u));
     line-height: normal;
@@ -53,6 +55,10 @@ const items = [
     white-space: nowrap;
     color: rgba(0, 0, 0, 0.4);
     view-transition-name: site-nav;
+  }
+
+  li {
+    position: relative;
   }
 
   .active {
@@ -83,8 +89,31 @@ const items = [
   }
 
   /* Draw the brush stroke in when arriving from another section (type set in Frame.astro). */
-  :global(html:active-view-transition-type(section-change)) .underline img {
-    animation: draw-underline 450ms cubic-bezier(0.65, 0, 0.35, 1) 300ms both;
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html:active-view-transition-type(section-change)) .underline img {
+      animation: draw-underline 450ms cubic-bezier(0.65, 0, 0.35, 1) 300ms both;
+    }
+  }
+
+  @media (max-width: 1000px), (orientation: portrait) {
+    nav {
+      order: -1;
+    }
+
+    ul {
+      position: relative;
+      inset: auto;
+      flex-wrap: wrap;
+      gap: 0.75em 1em;
+      font-size: clamp(0.75rem, 3.2cqw, 1.5rem);
+    }
+
+    .underline {
+      left: -6%;
+      top: 100%;
+      width: 112%;
+      height: 0.32em;
+    }
   }
 
   @keyframes draw-underline {

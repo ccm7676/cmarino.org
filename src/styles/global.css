@@ -39,10 +39,17 @@ body {
   container-type: inline-size;
 }
 
+/*
+ * Fixed-height frames fill the viewport exactly, so desktop pages don't scroll: --ux and --uy
+ * map Figma px along each axis (positions and box sizes), and --u, the tighter of the two, is
+ * for everything that must keep its proportions (text, radii, borders).
+ */
 .frame {
-  --u: calc(100cqw / 3690);
+  --ux: calc(100cqw / 3690);
+  --uy: calc(100svh / var(--frame-h));
+  --u: min(var(--ux), var(--uy));
   position: relative;
-  height: calc(var(--frame-h) * var(--u));
+  height: 100svh;
   overflow: hidden;
   background: var(--frame-bg);
 }
@@ -69,6 +76,27 @@ img {
   display: block;
 }
 
+/* Pages taller than the design (the gallery) grow with their content and scroll; --u stays
+   as on the fixed pages (using the design's height) so the shared nav matches. */
 .frame.auto {
+  --uy: calc(100svh / 2766);
   height: auto;
+}
+
+/*
+ * Narrow and portrait screens: the 3690px Figma frame scaled down is unreadable, so pages
+ * switch from absolute Figma positions to a stacked layout (each page/component restyles
+ * its own elements under this same media query).
+ */
+@media (max-width: 1000px), (orientation: portrait) {
+  .frame,
+  .frame.auto {
+    --pad: clamp(1.25rem, 5cqw, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 6cqw, 3rem);
+    height: auto;
+    min-height: 100svh;
+    padding: var(--pad) max(var(--pad), (100cqw - 56rem) / 2);
+  }
 }

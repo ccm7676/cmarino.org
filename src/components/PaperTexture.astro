@@ -1,6 +1,9 @@
 ---
 import { Image, getImage } from 'astro:assets';
-import paper from '../assets/paper-texture.jpg';
+// paper-texture.jpg baked into black with alpha = 1 - luminance, which looks the same as
+// multiplying the (greyscale) texture over the page but needs no blend mode. Chrome drops
+// mix-blend-mode on the first frame of a view transition, which flashed the page white.
+import paper from '../assets/paper-shade.webp';
 
 type Props =
   | {
@@ -23,22 +26,26 @@ const props = Astro.props;
 const widths = [1280, 1920, 2560, 3200, 4096];
 const sizes = '114vw';
 
-const tile = props.repeat ? await getImage({ src: paper, width: 2560 }) : undefined;
+// Tiled version for the auto-height gallery, and for every page's stacked small-screen layout.
+const tile = await getImage({ src: paper, width: props.repeat ? 2560 : 1280 });
 ---
 
 {
   props.repeat ? (
-    <div class="paper repeat" style={`background-image: url(${tile!.src});`} />
+    <div class="paper repeat" style={`--tile: url(${tile.src});`} data-preload={tile.src} />
   ) : (
     <div
       class="paper"
-      style={`--x: ${props.x}; --y: ${props.y}; --w: ${props.width}; --h: ${props.height};`}
+      style={`--x: ${props.x}; --y: ${props.y}; --w: ${props.width}; --h: ${props.height}; --tile: url(${tile.src});`}
+      data-preload={tile.src}
     >
       <Image
         src={paper}
         alt=""
         widths={widths}
         sizes={sizes}
+        loading="eager"
+        decoding="sync"
         class={props.crop ? 'cropped' : 'cover'}
         style={props.crop &&
           `left: ${props.crop.left}%; top: ${props.crop.top}%; width: ${props.crop.width}%; height: ${props.crop.height}%;`}
@@ -50,12 +57,11 @@ const tile = props.repeat ? await getImage({ src: paper, width: 2560 }) : undefi
 <style>
   .paper {
     position: absolute;
-    left: calc(var(--x) * var(--u));
-    top: calc(var(--y) * var(--u));
-    width: calc(var(--w) * var(--u));
-    height: calc(var(--h) * var(--u));
+    left: calc(var(--x) * var(--ux));
+    top: calc(var(--y) * var(--uy));
+    width: calc(var(--w) * var(--ux));
+    height: calc(var(--h) * var(--uy));
     overflow: hidden;
-    mix-blend-mode: multiply;
     pointer-events: none;
     view-transition-name: paper;
   }
@@ -65,7 +71,8 @@ const tile = props.repeat ? await getImage({ src: paper, width: 2560 }) : undefi
     width: auto;
     height: auto;
     /* Same scale as the covered texture on the fixed-height pages. */
-    background-size: calc(4199 * var(--u)) auto;
+    background-image: var(--tile);
+    background-size: calc(4199 * var(--ux)) auto;
     background-position: center top;
     background-repeat: repeat-y;
   }
@@ -80,5 +87,21 @@ const tile = props.repeat ? await getImage({ src: paper, width: 2560 }) : undefi
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  @media (max-width: 1000px), (orientation: portrait) {
+    .paper {
+      inset: 0;
+      width: auto;
+      height: auto;
+      background-image: var(--tile);
+      background-size: max(114cqw, 60rem) auto;
+      background-position: center top;
+      background-repeat: repeat;
+    }
+
+    img {
+      display: none;
+    }
   }
 </style>

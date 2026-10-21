@@ -17,16 +17,16 @@ const panels = [163.44, 1336.24, 2476.45];
     panels.map((x, i) => (
       <div
         class="panel"
-        style={`--x: ${x}; view-transition-name: photo-panel-${i}; view-transition-class: wipe wipe-${i + 1};`}
+        style={`--x: ${x}; --col: ${i + 1}; view-transition-name: photo-panel-${i}; view-transition-class: wipe wipe-${i + 1};`}
       >
-        <Image src={photo} alt="" widths={[400, 800, 1200, 1600]} sizes="29vw" />
+        <Image src={photo} alt="" widths={[400, 800, 1200, 1600]} sizes="29vw" priority />
       </div>
     ))
   }
 
   <h1>PHOTOS</h1>
 
-  <SiteNav active="photos" underline={{ src: underline.src, x: 1314.51, y: 206.06, width: 444.033 }} />
+  <SiteNav active="photos" underline={{ src: underline.src, x: -1.27, y: 117.01, width: 444.033 }} />
 
   <PaperTexture x={0} y={0} width={3742.732} height={2801.338} />
 
@@ -36,10 +36,10 @@ const panels = [163.44, 1336.24, 2476.45];
 <style>
   .panel {
     position: absolute;
-    left: calc(var(--x) * var(--u));
-    top: calc(712.43 * var(--u));
-    width: calc(1050.108 * var(--u));
-    height: calc(1574.97 * var(--u));
+    left: calc(var(--x) * var(--ux));
+    top: calc(712.43 * var(--uy));
+    width: calc(1050.108 * var(--ux));
+    height: calc(1574.97 * var(--uy));
   }
 
   .panel img {
@@ -50,8 +50,9 @@ const panels = [163.44, 1336.24, 2476.45];
 
   h1 {
     position: absolute;
-    left: calc(800.37 * var(--u));
-    top: calc(1124.92 * var(--u));
+    left: calc(1870.76 * var(--ux));
+    top: calc(1124.92 * var(--uy));
+    transform: translateX(-50%);
     font-family: 'Charlottenburg Choices', serif;
     font-size: calc(600 * var(--u));
     line-height: normal;
@@ -63,12 +64,12 @@ const panels = [163.44, 1336.24, 2476.45];
 
   .view {
     position: absolute;
-    left: calc(1388.98 * var(--u));
-    top: calc(2048.56 * var(--u));
+    left: calc(1388.98 * var(--ux));
+    top: calc(2048.56 * var(--uy));
     display: flex;
     align-items: center;
     justify-content: center;
-    width: calc(964.777 * var(--u));
+    width: calc(964.777 * var(--ux));
     height: calc(200 * var(--u));
     border: calc(8 * var(--u)) solid white;
     font-family: 'Unity Sans Basic', sans-serif;
@@ -77,5 +78,53 @@ const panels = [163.44, 1336.24, 2476.45];
     color: white;
     view-transition-name: photos-view;
     view-transition-class: wipe wipe-3 above-paper;
+  }
+
+  /* Small screens: the three panels fill the screen under the nav, title and button on top. */
+  @media (max-width: 1000px), (orientation: portrait) {
+    :global(.frame) {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: auto minmax(24rem, 1fr) auto;
+      column-gap: clamp(0.5rem, 2.5cqw, 1.25rem);
+    }
+
+    :global(.frame > *) {
+      grid-column: 1 / -1;
+    }
+
+    .panel {
+      position: relative;
+      inset: auto;
+      grid-row: 2;
+      grid-column: var(--col);
+      width: auto;
+      height: auto;
+    }
+
+    h1 {
+      position: relative;
+      inset: auto;
+      grid-row: 2;
+      align-self: center;
+      justify-self: center;
+      transform: none;
+      font-size: clamp(3rem, 17cqw, 9rem);
+    }
+
+    .view {
+      position: relative;
+      inset: auto;
+      z-index: 1;
+      grid-row: 2;
+      align-self: end;
+      justify-self: center;
+      width: min(70%, 22rem);
+      height: auto;
+      margin-bottom: 12%;
+      padding: 0.9em;
+      border-width: 2px;
+      font-size: clamp(0.85rem, 3.3cqw, 1.125rem);
+    }
   }
 </style>

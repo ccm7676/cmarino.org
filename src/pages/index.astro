@@ -15,7 +15,13 @@ const links = [
 
 <Frame title="Carl Marino — Contact" background="black" height={2792}>
   <div class="photo">
-    <Image src={photo} alt="" widths={[480, 800, 1200, 1600, 2400]} sizes="47vw" />
+    <Image
+      src={photo}
+      alt=""
+      widths={[480, 800, 1200, 1600, 2400]}
+      sizes="(max-width: 1000px) 100vw, (orientation: portrait) 100vw, 47vw"
+      priority
+    />
   </div>
 
   <ul class="links">
@@ -58,10 +64,10 @@ const links = [
 <style>
   .photo {
     position: absolute;
-    left: calc(77.82 * var(--u));
-    top: calc(81.89 * var(--u));
-    width: calc(1727.203 * var(--u));
-    height: calc(2598.383 * var(--u));
+    left: calc(77.82 * var(--ux));
+    top: calc(81.89 * var(--uy));
+    width: calc(1727.203 * var(--ux));
+    height: calc(2598.383 * var(--uy));
     border: calc(10 * var(--u)) solid black;
     border-radius: calc(70 * var(--u));
     overflow: hidden;
@@ -76,8 +82,8 @@ const links = [
 
   .links {
     position: absolute;
-    left: calc(2075.61 * var(--u));
-    top: calc(361.59 * var(--u));
+    left: calc(2075.61 * var(--ux));
+    top: calc(361.59 * var(--uy));
     display: flex;
     flex-direction: column;
     gap: calc(55.47 * var(--u));
@@ -88,11 +94,11 @@ const links = [
     white-space: pre;
   }
 
-  /* Positioned against the frame, not the link text. */
+  /* Positioned against the link list (in --u so it stays beside the WORK text). */
   .arrow {
     position: absolute;
-    left: calc(3157.53 * var(--u) - 2075.61 * var(--u));
-    top: calc(1942.83 * var(--u) - 361.59 * var(--u));
+    left: calc((3157.53 - 2075.61) * var(--u));
+    top: calc((1942.83 - 361.59) * var(--u));
     width: calc(232.169 * var(--u));
     height: calc(232.169 * var(--u));
     display: flex;
@@ -115,5 +121,41 @@ const links = [
     width: 111.01%;
     height: 109.67%;
     max-width: none;
+  }
+
+  /* Portrait: stacked on one screen, the photo takes whatever height the links leave. */
+  @media (orientation: portrait) {
+    .photo {
+      position: relative;
+      inset: auto;
+      flex: 1 1 0;
+      width: 100%;
+      height: auto;
+      min-height: 6rem;
+      border: 0;
+      border-radius: clamp(1rem, 4cqw, 2rem);
+    }
+
+    .links {
+      position: relative;
+      inset: auto;
+      gap: 0;
+      font-size: clamp(1.75rem, min(11cqw, 8svh), 5rem);
+      line-height: 1.15;
+    }
+
+    .arrow {
+      position: relative;
+      inset: auto;
+      display: inline-flex;
+      width: 0.6em;
+      height: 0.6em;
+      vertical-align: -0.02em;
+    }
+
+    .arrow-rotate {
+      width: 0.42em;
+      height: 0.42em;
+    }
   }
 </style>

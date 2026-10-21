@@ -15,20 +15,21 @@ import { photos } from '../../data/photos';
 
   <ul class="gallery">
     {
-      photos.map((photo) => (
+      photos.map((photo, i) => (
         <li>
           <Image
             src={photo.src}
             alt={photo.alt}
             widths={[400, 640, 960, 1280, 1920]}
-            sizes="28.2vw"
+            sizes="(max-width: 1000px) 48vw, (orientation: portrait) 48vw, 28.2vw"
+            loading={i < 6 ? 'eager' : 'lazy'}
           />
         </li>
       ))
     }
   </ul>
 
-  <SiteNav active="photos" underline={{ src: underline.src, x: 1314.51, y: 206.06, width: 444.033 }} />
+  <SiteNav active="photos" underline={{ src: underline.src, x: -1.27, y: 117.01, width: 444.033 }} />
 
   <PaperTexture repeat />
 
@@ -38,20 +39,32 @@ import { photos } from '../../data/photos';
 <style>
   .gallery {
     columns: 3;
-    column-gap: calc(122 * var(--u));
-    padding: calc(400 * var(--u)) calc(163.44 * var(--u)) calc(300 * var(--u));
+    column-gap: calc(122 * var(--ux));
+    padding: calc(400 * var(--uy)) calc(163.44 * var(--ux)) calc(300 * var(--uy));
     view-transition-name: gallery;
     view-transition-class: wipe;
   }
 
   .gallery li {
     break-inside: avoid;
-    margin-bottom: calc(122 * var(--u));
+    margin-bottom: calc(122 * var(--ux));
   }
 
   .gallery img {
     width: 100%;
     height: auto;
+  }
+
+  @media (max-width: 1000px), (orientation: portrait) {
+    .gallery {
+      columns: 2;
+      column-gap: clamp(0.75rem, 3cqw, 1.5rem);
+      padding: 0;
+    }
+
+    .gallery li {
+      margin-bottom: clamp(0.75rem, 3cqw, 1.5rem);
+    }
   }
 
   .visually-hidden {
